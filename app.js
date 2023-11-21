@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use("/posts", postsController);
 app.use("/users", usersContoller);
-// app.use("comments", commentContoller);
+app.use("/comments", commentContoller);
 
 app.get("/", (req, res) => {
     res.send("Welcome to Cosmic Connect!");
