@@ -1,5 +1,5 @@
 const express = require("express");
-const posts = express.Router();
+const posts = express.Router({ mergeParams: true });
 const {
   getAllPosts,
   getOnePost,
@@ -7,8 +7,11 @@ const {
   updatePost,
   deletePost,
 } = require("../queries/posts");
+const comments = require("../controllers/commentsController")
 
-posts.get("/id", async (req, res) => {
+posts.use("posts/:id/comments", comments)
+
+posts.get("/:id", async (req, res) => {
   const { id } = req.params;
   const onePost = await getOnePost(id);
   if (onePost) {
@@ -27,17 +30,22 @@ posts.get("/", async (req, res) => {
   }
 });
 
-posts.post("/register", async (req, res) => {
+posts.post("/", async (req, res) => {
   try {
-    const createdPost = await createPost(req.body);
+    const userId = req.params.userId;
+    const postWithUserId = { ...req.body, user_id: userId };
+
+    const createdPost = await createPost(postWithUserId);
     res.json(createdPost);
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ success: false, data: { error: "Server Error!" } });
+  }
 });
 
-posts.delete("/id", async (req, res) => {
+posts.delete("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedPost = await deletePost(id);
+    const { id, userId } = req.params;
+    const deletedPost = await deletePost(id, userId);
     if (deletedPost) {
       res.status(200).json(deletedPost);
     } else {
@@ -48,10 +56,11 @@ posts.delete("/id", async (req, res) => {
   }
 });
 
-posts.put("/id", async (req, res) => {
+posts.put("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedPost = await updatePost(id, req.body);
+    const { id, userId } = req.params;
+  
+    const updatedPost = await updatePost(id, userId, req.body);
     if (updatedPost.id) {
       res.status(200).json(updatedPost);
     } else {

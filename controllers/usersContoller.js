@@ -8,12 +8,14 @@ const {
   getOneUser,
 } = require("../queries/users");
 const posts = require("../controllers/postsController")
+const comments = require("../controllers/commentsController")
 
-// users.use("/:userId/posts", posts)
+users.use("/:userId/posts", posts)
+users.use("/:userId/posts/:id/comments", comments)
 
-users.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const oneUser = await getOneUser(id);
+users.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const oneUser = await getOneUser(userId);
   if (oneUser) {
     res.json(oneUser);
   } else {

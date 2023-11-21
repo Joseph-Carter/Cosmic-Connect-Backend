@@ -4,7 +4,8 @@ const {
   createOneComment,
   deleteComment,
 } = require("../queries/comments");
-const comments = express.Router();
+const comments = express.Router({mergeParams: true});
+
 
 comments.get("/", async (req, res) => {
   try {
@@ -24,7 +25,7 @@ comments.post("/", async (req, res) => {
     }
 });
 
-comments.delete("/id", async (req, res) => {
+comments.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const deletedComment = await deleteComment(id, re.body);

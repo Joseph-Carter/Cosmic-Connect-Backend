@@ -3,7 +3,6 @@ const db = require("../db/dbConfig.js");
 const getAllPosts = async () => {
   try {
     const allPosts = await db.any("SELECT * FROM posts");
-    console.log(allPosts);
     return allPosts;
   } catch (error) {
     console.error(error);
@@ -22,7 +21,7 @@ const getOnePost = async (id) => {
 const createPost = async (post) => {
   try {
     const createdPost = await db.one(
-      "INSERT INTO posts (title, description, image, tags, super_interest, interest_level, uploaded_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      "INSERT INTO posts (title, description, image, tags, super_interest, interest_level, uploaded_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
       [
         post.title,
         post.description,
@@ -31,6 +30,7 @@ const createPost = async (post) => {
         post.super_interest,
         post.interest_level,
         post.uploaded_at,
+        post.user_id,
       ]
     );
     return createdPost;
@@ -39,7 +39,7 @@ const createPost = async (post) => {
   }
 };
 
-const updatePost = async (id, post) => {
+const updatePost = async (id, userId, post) => {
   try {
     const {
       title,
@@ -49,21 +49,28 @@ const updatePost = async (id, post) => {
       super_interest,
       interest_level,
       uploaded_at,
+      user_id,
     } = post;
-    const updatedPost = await db.one(
-      "UPDATE posts SET title=$1, description=$2, image=$3, tags=$4, super_interest=$5, interest_level=$6, uploaded_at=$7 WHERE id=$8 RETURNING *",
-      [
-        title,
-        description,
-        image,
-        tags,
-        super_interest,
-        interest_level,
-        uploaded_at,
-        id,
-      ]
-    );
-    return updatedPost;
+
+    if (parseInt(post.user_id) === parseInt(userId)) {
+      const updatedPost = await db.one(
+        "UPDATE posts SET title=$1, description=$2, image=$3, tags=$4, super_interest=$5, interest_level=$6, uploaded_at=$7, user_id=$8 WHERE id=$9 RETURNING *",
+        [
+          title,
+          description,
+          image,
+          tags,
+          super_interest,
+          interest_level,
+          uploaded_at,
+          user_id,
+          id,
+        ]
+      );
+      return updatedPost;
+    } else {
+      return "Unauthorized to update this post";
+    }
   } catch (error) {
     console.error(error);
   }
@@ -76,8 +83,7 @@ const deletePost = async (id, userId) => {
     if (!post) {
       return "Post not found";
     }
-
-    if (post.user_id === userId) {
+    if (parseInt(post.user_id) === parseInt(userId)) {
       await db.none("DELETE FROM posts WHERE id = $1", id);
       return "Post deleted successfully";
     } else {
