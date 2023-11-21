@@ -18,6 +18,8 @@ CREATE TABLE posts (
     description TEXT,
     image VARCHAR(255),
     tags VARCHAR(255),
+    super_interest BOOLEAN,
+    interest_level DECIMAL CHECK (interest_level >= 0 AND interest_level <= 10),
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE
 );

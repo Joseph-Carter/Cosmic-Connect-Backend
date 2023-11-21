@@ -1,5 +1,4 @@
 const validator = require("validator");
-const { isEmpty, isEmail, isLength } = require('validator');
 
 const validateRegisterInput = ({ body: userRegistry }, res, next) => {
   const registryErrors = [];
