@@ -7,9 +7,10 @@ const {
 const comments = express.Router({mergeParams: true});
 
 
-comments.get("/", async (req, res) => {
+comments.get("/:id", async (req, res) => {
+    const { id } = req.params
   try {
-    const allComments = await getAllComments();
+    const allComments = await getAllComments(id);
     res.status(200).json(allComments);
   } catch (error) {
     res.status(500).json({ success: false, data: { error: "Server Error" } });
@@ -27,8 +28,8 @@ comments.post("/", async (req, res) => {
 
 comments.delete("/:id", async (req, res) => {
     try {
-        const { id } = req.params;
-        const deletedComment = await deleteComment(id, re.body);
+        const { userId } = req.params;
+        const deletedComment = await deleteComment(userId, req.body);
         if (deletedComment.id) {
             res.status(200).json(deletedComment)
         } else {

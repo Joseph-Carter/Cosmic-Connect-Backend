@@ -9,11 +9,11 @@ const {
 } = require("../queries/posts");
 const comments = require("../controllers/commentsController")
 
-posts.use("posts/:id/comments", comments)
+posts.use("posts/:postId/comments", comments)
 
-posts.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const onePost = await getOnePost(id);
+posts.get("/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const onePost = await getOnePost(postId);
   if (onePost) {
     res.status(200).json(onePost);
   } else {
@@ -42,10 +42,10 @@ posts.post("/", async (req, res) => {
   }
 });
 
-posts.delete("/:id", async (req, res) => {
+posts.delete("/:postId", async (req, res) => {
   try {
-    const { id, userId } = req.params;
-    const deletedPost = await deletePost(id, userId);
+    const { postId, userId } = req.params;
+    const deletedPost = await deletePost(postId, userId);
     if (deletedPost) {
       res.status(200).json(deletedPost);
     } else {
@@ -56,11 +56,11 @@ posts.delete("/:id", async (req, res) => {
   }
 });
 
-posts.put("/:id", async (req, res) => {
+posts.put("/:postId", async (req, res) => {
   try {
-    const { id, userId } = req.params;
+    const { postId, userId } = req.params;
   
-    const updatedPost = await updatePost(id, userId, req.body);
+    const updatedPost = await updatePost(postId, userId, req.body);
     if (updatedPost.id) {
       res.status(200).json(updatedPost);
     } else {

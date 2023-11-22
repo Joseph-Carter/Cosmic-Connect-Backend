@@ -17,7 +17,7 @@ const createOneComment = async (reply) => {
 
   try {
     const createdComment = await db.one(
-      "INSERT INTO comments (comment, commented_a, post_id, user_id) VALUES ($1, $2 , $3, $4) RETURNING *",
+      "INSERT INTO comments (comment, commented_at, post_id, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [comment, commented_at, post_id, user_id]
     );
     return createdComment;
@@ -26,20 +26,17 @@ const createOneComment = async (reply) => {
   }
 };
 
-const deleteComment = async (id, userId, postId) => {
+
+const deleteComment = async (userId, commentToDelete) => {
+  console.log(userId)
   try {
-    const comment = await db.oneOrNone(
-      "SELECT * FROM comments WHERE id = $1",
-      id
-    );
+   
+    const post = await db.oneOrNone("SELECT * FROM posts WHERE id = $1", userId);
 
-    if (!comment) {
-      return "Comment not found";
-    }
+    if (commentToDelete.use_id == parseInt(userId) || post.user_id == parseInt(userId)) {
+      const deletedComment = await db.oneOrNone("DELETE FROM comments WHERE id = $1 RETURNING *", commentToDelete.id);
 
-    if (comment.user_id === userId || comment.post_id === postId) {
-      await db.none("DELETE FROM comments WHERE id = $1", id);
-      return "Comment deleted successfully";
+      return deletedComment;
     } else {
       return "Unauthorized to delete this comment";
     }
