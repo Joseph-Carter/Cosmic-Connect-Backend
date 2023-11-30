@@ -9,7 +9,7 @@ const {
 } = require("../queries/posts");
 const comments = require("../controllers/commentsController")
 
-posts.use("posts/:postId/comments", comments)
+posts.use("posts/:postId/", comments)
 
 posts.get("/:postId", async (req, res) => {
   const { postId } = req.params;

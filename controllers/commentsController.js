@@ -28,8 +28,9 @@ comments.post("/", async (req, res) => {
 
 comments.delete("/:id", async (req, res) => {
     try {
-        const { userId } = req.params;
-        const deletedComment = await deleteComment(userId, req.body);
+        const { userId, commentId } = req.params;
+        const deletedComment = await deleteComment(userId, commentId, req.body);
+        console.log("THIS IS DELETED COMMENT --->", deletedComment)
         if (deletedComment.id) {
             res.status(200).json(deletedComment)
         } else {

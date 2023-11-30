@@ -10,12 +10,13 @@ const {
 const posts = require("../controllers/postsController")
 const comments = require("../controllers/commentsController")
 
-users.use("/:userId/posts", posts)
-users.use("/:userId/posts/:id/comments", comments)
+users.use("/users/:userId/posts", posts)
+users.use("/:userId/posts/:id/", comments)
 
 users.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   const oneUser = await getOneUser(userId);
+  // console.log("THIS IS ONEUSER FROM CONTROLLER --->", oneUser)
   if (oneUser) {
     res.json(oneUser);
   } else {
@@ -23,7 +24,7 @@ users.get("/:userId", async (req, res) => {
   }
 });
 
-users.post("/register", validateRegisterInput, async (req, res) => {
+users.post("/signup", validateRegisterInput, async (req, res) => {
   try {
     const { password, ...userData } = req.body;
     const salt = await bcrypt.genSalt(10);

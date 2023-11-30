@@ -8,9 +8,9 @@ const commentContoller = require("./controllers/commentsController")
 app.use(cors());
 app.use(express.json());
 
-app.use("/users/", usersContoller);
+app.use("/users", usersContoller);
 app.use("/users/:userId/posts", postsController);
-app.use("/users/:userId/posts/:postId", commentContoller);
+app.use("/users/:userId/posts/:postId/comments", commentContoller);
 
 app.get("/", (req, res) => {
     res.send("Welcome to Cosmic Connect!");

@@ -20,14 +20,14 @@ CREATE TABLE posts (
     tags VARCHAR(255),
     super_interest BOOLEAN,
     interest_level DECIMAL CHECK (interest_level >= 0 AND interest_level <= 10),
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    uploaded_at BIGINT NOT NULL,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     comment TEXT NOT NULL,
-    commented_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    commented_at BIGINT NOT NULL, 
     post_id INTEGER REFERENCES posts (id) ON DELETE CASCADE,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE
 );

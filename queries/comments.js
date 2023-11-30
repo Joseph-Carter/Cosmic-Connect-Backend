@@ -28,12 +28,12 @@ const createOneComment = async (reply) => {
 
 
 const deleteComment = async (userId, commentToDelete) => {
-  console.log(userId)
+  console.log("DELETE COMMENT USERID -->", userId)
   try {
    
     const post = await db.oneOrNone("SELECT * FROM posts WHERE id = $1", userId);
-
-    if (commentToDelete.use_id == parseInt(userId) || post.user_id == parseInt(userId)) {
+    
+    if (commentToDelete.user_id == parseInt(userId) || post.user_id == parseInt(userId)) {
       const deletedComment = await db.oneOrNone("DELETE FROM comments WHERE id = $1 RETURNING *", commentToDelete.id);
 
       return deletedComment;
