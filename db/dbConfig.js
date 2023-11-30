@@ -4,11 +4,9 @@ require("dotenv").config();
 
 const DATABASE_URL = process.env.DATABASE_URL 
 
-const cn = DATABASE_URL ? {
-    connectionString: DATABASE_URL,
-    max:30
-} : {
-    host: process.env.PG_HOST,
+const cn = {
+    databaseURL: process.env.DATABASE_URL,
+    host: process.env.PG_HOST, 
     port: process.env.PG_PORT,
     database: process.env.PG_DATABASE,
     user: process.env.PG_USER,
