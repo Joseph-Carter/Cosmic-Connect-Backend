@@ -6,7 +6,6 @@ const getAllPosts = async () => {
     const allPosts = await db.any(
       "SELECT posts.id AS id, posts.title, posts.description, posts.image, posts.tags, posts.super_interest, posts.interest_level, posts.uploaded_at, posts.user_id, users.id AS user_id, users.first_name, users.last_name FROM posts JOIN users ON users.id = posts.user_id"
     );
-    console.log(allPosts);
     return allPosts;
   } catch (error) {
     console.error(error);
@@ -21,7 +20,6 @@ const getOnePost = async (id) => {
         const { first_name, last_name } = (postAuthor = await getOneUser(
           onePost.user_id
         ));
-        console.log("FIRST AND LAST NAME OF USER --->", first_name, last_name);
         return { ...onePost, first_name, last_name };
       } catch (err) {
         console.log(err);
